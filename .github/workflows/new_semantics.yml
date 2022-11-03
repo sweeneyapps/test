@@ -1,0 +1,32 @@
+name: Semantic PR Title with regex
+
+on:
+  pull_request:
+    types:
+      - opened
+      - synchronize
+      - edited
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check PR title with regex
+        uses: actions/github-script@v6
+        env:
+          TITLE: ${{ github.event.pull_request.title }}
+        with:
+          script: |
+            const { TITLE } = process.env
+
+            const types = /^(feat(ure)?|breaking|rule|fix|build|chore|ci|docs|perf|refactor|style|test)(\(.*\))?:.+/
+            const match = TITLE.match(types)
+
+            console.log("Validating PR title: %s", TITLE)
+
+            if (match !== null) {
+              console.log("Title matches conventional commits (type: %s).", TITLE.match(/^.*:/)[0])
+              return
+            }
+
+            throw new Error("PR title does not follow conventional commits. Please refer to https://www.conventionalcommits.org/en/v1.0.0")
