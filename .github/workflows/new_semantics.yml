@@ -17,16 +17,17 @@ jobs:
           TITLE: ${{ github.event.pull_request.title }}
         with:
           script: |
+            const core = require('@actions/core');
             const { TITLE } = process.env
 
             const types = /^(feat(ure)?|breaking|rule|fix|build|chore|ci|docs|perf|refactor|style|test)(\(.*\))?:.+/
             const match = TITLE.match(types)
 
-            console.log("Validating PR title: %s", TITLE)
+            core.info(`Validating PR title: ${TITLE}`)
 
             if (match !== null) {
-              console.log("Title matches conventional commits (type: %s).", TITLE.match(/^.*:/)[0])
+              core.notice(`Title matches conventional commits (type: ${TITLE.match(/^.*:/)[0]})`)
               return
             }
 
-            throw new Error("PR title does not follow conventional commits. Please refer to https://www.conventionalcommits.org/en/v1.0.0")
+            core.setFailed("PR title does not follow conventional commits. Please refer to https://www.conventionalcommits.org/en/v1.0.0")
