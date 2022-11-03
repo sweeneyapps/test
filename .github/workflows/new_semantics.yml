@@ -17,7 +17,6 @@ jobs:
           TITLE: ${{ github.event.pull_request.title }}
         with:
           script: |
-            const core = require('@actions/core');
             const { TITLE } = process.env
 
             const types = /^(feat(ure)?|breaking|rule|fix|build|chore|ci|docs|perf|refactor|style|test)(\(.*\))?:.+/
