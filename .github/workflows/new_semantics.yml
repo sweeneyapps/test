@@ -18,14 +18,36 @@ jobs:
         with:
           script: |
             const { TITLE } = process.env
+            
+            const types = [
+              'feat',
+              'breaking',
+              'rule',
+              'fix',
+              'feature',
+              'build',
+              'chore',
+              'ci', 
+              'docs',
+              'perf',
+              'refactor',
+              'style',
+              'test',
+            ].join("|")
 
-            const types = /^(feat(ure)?|breaking|rule|fix|build|chore|ci|docs|perf|refactor|style|test)(\(.*\))?:.+/
-            const match = TITLE.match(types)
+            // commit types listed above is required.
+            // '(scope)' is optional.
+            // ':' is required.
+            // space after ':' is required. 
+            // 5 or more characters after ': ' is required.
+            const regexTypes = new RegExp(`^(${types})(\\(.*\\))?:\\s.{5,}`) 
+
+            const match = TITLE.match(regexTypes)
 
             core.info(`Validating PR title: ${TITLE}`)
 
             if (match !== null) {
-              core.notice(`Title matches conventional commits (type: ${TITLE.match(/^.*:/)[0]})`)
+              core.notice(`Title matches conventional commits (type: ${match[1]})`)
               return
             }
 
