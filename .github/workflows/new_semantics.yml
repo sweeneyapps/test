@@ -13,9 +13,11 @@ jobs:
     steps:
       - name: Check PR title with regex
         uses: actions/github-script@v6
+        env:
+          TITLE: ${{ github.event.pull_request.title }}
         with:
           script: |
-            const TITLE = github.event.pull_request.title
+            const { TITLE } = process.env   
             
             const types = [
               'feat',
